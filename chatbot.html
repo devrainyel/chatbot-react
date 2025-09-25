@@ -43,40 +43,62 @@
         }
 
         function ChatMessages() {
-            const chatMessages = [{
+            const array =  React.useState([{
                 message: "hey",
                 sender: "user",
                 id: 'id1'
             }, {
-                messsage: "Hey there! How can I help you?",
+                message: "Hey there! How can I help you?",
                 sender: "bot",
                 id: 'id2'
             }, {
-                messsage: "can you get me todays date?",
+                message: "can you get me todays date?",
                 sender: "user",
                 id: 'id3'
             }, {
-                messsage: "Today is September 27",
+                message: "Today is September 27",
                 sender: "bot",
                 id: 'id4'
-            }];
+            }]);
+            const chatMessages = array[0];
+            const setChatMessages = array[1];
 
-            {chatMessages.map((chatMessage) => {
-                return (
-                    <ChatMessage 
-                        message={chatMessage.message}
-                        sender={chatMessage.sender}
-                        key={chatMessage.id}
-                    />
-                )
-            })}
+            console.log(chatMessages);
+
+            function sendMessage() {
+                setChatMessages([
+                    ...chatMessages,
+                    {
+                        message: 'test',
+                        sender: 'user',
+                        id: crypto.randomUUID()
+                    }
+                ]);
+                
+            }
+
+            return (
+                <>
+                    <button onClick={sendMessage}>Send message</button>
+
+                    {chatMessages.map((chatMessage) => {
+                    return (
+                        <ChatMessage 
+                            message={chatMessage.message}
+                            sender={chatMessage.sender}
+                            key={chatMessage.id}
+                        />
+                    )
+                    })}
+                </>
+            )
         }
 
         function App() {
             return (
                 <>
                     <ChatInput />
-                    
+                    <ChatMessages />
                 </>
             );
         }
