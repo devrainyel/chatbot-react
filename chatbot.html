@@ -4,6 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+
+        .send-button {
+            background-color: rgb(25, 135, 84);
+            color: white;
+            padding: 12px 20px;
+            margin-left: 10px; 
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .chat-input {
+            padding: 12px 15px;
+            border-radius: 10px;
+            border-width: 1px;
+            font-size: 15px;
+            flex-grow: 1;
+        }
+
+        .chat-input-container {
+            display: flex;
+            margin-bottom: 60px;
+        }
+
+        .app-container {
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-message-user {
+            display: flex;
+            justify-content: end;
+        }
+
+        .chat-message-bot {
+            display: flex;
+        }
+
+        .chat-message-text {
+            background-color:  rgb(238, 238, 238);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-right: 10px;
+            margin-left: 10px;
+            margin-bottom: 20px;
+            max-width: 300px;
+            word-wrap: break-word;
+            vertical-align: middle;
+        }
+
+        .fa-solid {
+            color: green;
+        }
+
+        .chat-messages-container {
+            flex-grow: 1;
+            margin-top: 20px;
+            overflow-y: scroll;
+            scrollbar-width: none;
+        }
+    </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
@@ -69,44 +142,62 @@
                     setInputText('');
                 }
             }
-                //Controlled input by putting inputText as value
+                
             return (
-                <>
+                <div className="chat-input-container">
                     <input 
                         placeholder="Send a message to Chatbot" 
                         size="30" 
                         onChange={saveInputText}
                         value={inputText}
                         onKeyDown={OnKeyDown}
+                        className="chat-input"
                     />
                     <button 
                         onClick={sendMessage}
+                        className="send-button"
                     >Send</button>
-                </>
+                </div>
             );
         }
 
         function ChatMessage({ message, sender }) {
             // const { message, sender } = props;
             return (
-                <div>
+                <div className={
+                    sender === 'user' 
+                    ? 'chat-message-user' 
+                    : 'chat-message-bot'
+                }>
                     {
                     sender === 'bot' &&  (
-                        <i className="fa-solid fa-robot fa-3x" style={{ color: 'green' }}></i>
+                        <i className="fa-solid fa-robot fa-2x"></i>
                     )}
-                    {message}
+                    <div className="chat-message-text">
+                        {message}
+                    </div>
                     {sender === 'user' && (
-                        <i className="fa-solid fa-circle-user fa-3x" style={{ color: 'green' }}></i>
+                        <i className="fa-solid fa-circle-user fa-2x"></i>
                     )}
                 </div>
             );
         }
 
         function ChatMessages( {chatMessages} ) {
-            
 
+            const chatMessagesRef  = React.useRef(null);
+            React.useEffect(() => {
+               const containerElem = chatMessagesRef.current;
+              if (containerElem) {
+               containerElem.scrollTop = containerElem.scrollHeight;
+              }
+            }, [chatMessages]);
+            
             return (
-                <>
+                <div 
+                    className="chat-messages-container"
+                    ref={chatMessagesRef}
+                >
                     {chatMessages.map((chatMessage) => {
                     return (
                         <ChatMessage 
@@ -116,7 +207,7 @@
                         />
                     )
                     })}
-                </>
+                </div>
             )
         }
 
@@ -144,15 +235,15 @@
            // const [chatMessages, setChatMessages] = array; shorthand
 
             return (
-                <>
+                <div className="app-container">
+                    <ChatMessages 
+                        chatMessages={chatMessages}
+                    />
                     <ChatInput 
                         chatMessages={chatMessages}
                         setChatMessages={setChatMessages}
                     />
-                    <ChatMessages 
-                        chatMessages={chatMessages}
-                    />
-                </>
+                </div>
             );
         }
 
