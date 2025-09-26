@@ -16,6 +16,21 @@
 
     <script src="https://unpkg.com/supersimpledev/dayjs.js"></script>
     <script type="text/babel">
+    //3k. In the real world, the Chatbot does not respond immediately, 
+    //it takes some time to think, and then respond (see the final Chatbot project).
+    //We'll learn how to handle this situation.
+    //-Change Chatbot.getResponse to Chatbot.getResponseAsync (for this function, the
+    //Chatbot thinks for a second, and then responds).
+    //-Chatbot.getResponseAsync returns a promise (promise = a value that is not available yet
+    //,but will be available in the future).
+    //-Add await in front of Chatbot.getResponseAsync to wait for it to
+    //finish (wait for the value to be available before continuing).
+    //-Add async in front of function sendMessage() (because we can only use await inside an
+    //async function).
+    //-As a review, this is a JavaScript feature called async / await
+
+
+
         function  ChatInput( { chatMessages, setChatMessages } ) {
            const [inputText, setInputText] = React.useState('');
 
@@ -48,6 +63,14 @@
                 setInputText(''); // Controlled Input
             }
 
+            function OnKeyDown() {
+                if(event.key === 'Enter'){
+                    sendMessage();
+                } else if (event.key === 'Escape'){
+                    setInputText('');
+                }
+            }
+                //Controlled input by putting inputText as value
             return (
                 <>
                     <input 
@@ -55,6 +78,7 @@
                         size="30" 
                         onChange={saveInputText}
                         value={inputText}
+                        onKeyDown={OnKeyDown}
                     />
                     <button 
                         onClick={sendMessage}
