@@ -16,18 +16,12 @@
 
     <script src="https://unpkg.com/supersimpledev/dayjs.js"></script>
     <script type="text/babel">
-    //3k. In the real world, the Chatbot does not respond immediately, 
-    //it takes some time to think, and then respond (see the final Chatbot project).
-    //We'll learn how to handle this situation.
-    //-Change Chatbot.getResponse to Chatbot.getResponseAsync (for this function, the
-    //Chatbot thinks for a second, and then responds).
-    //-Chatbot.getResponseAsync returns a promise (promise = a value that is not available yet
-    //,but will be available in the future).
-    //-Add await in front of Chatbot.getResponseAsync to wait for it to
-    //finish (wait for the value to be available before continuing).
-    //-Add async in front of function sendMessage() (because we can only use await inside an
-    //async function).
-    //-As a review, this is a JavaScript feature called async / await
+    //3l. Now that we wait for the Chatbot's response, let's improve the app:
+    //-Update the code so it removes the text in the textbox right after
+    //sending our message (otherwise, the text will stay in the textbox for a while,
+    //until the response is ready, which doesn't look good).
+    //-While waiting for the Chatbot's response, display a "Loading..."
+    //message and remove it after (see final Chatbot project).
 
 
 
@@ -49,7 +43,9 @@
                 ];
 
                 setChatMessages(newChatMessages);
-
+                
+                setInputText('Loading...');
+                
                 const response = await Chatbot.getResponseAsync(inputText);
                 setChatMessages([
                     ...newChatMessages, //copy of newChatMessages
@@ -60,7 +56,7 @@
                     }
                 ]);
 
-                setInputText(''); // Controlled Input
+                response && setInputText('');
             }
 
             function OnKeyDown() {
