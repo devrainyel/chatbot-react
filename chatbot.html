@@ -16,23 +16,26 @@
 
     <script src="https://unpkg.com/supersimpledev/dayjs.js"></script>
     <script type="text/babel">
-    //3l. Now that we wait for the Chatbot's response, let's improve the app:
-    //-Update the code so it removes the text in the textbox right after
-    //sending our message (otherwise, the text will stay in the textbox for a while,
-    //until the response is ready, which doesn't look good).
-    //-While waiting for the Chatbot's response, display a "Loading..."
-    //message and remove it after (see final Chatbot project).
+    //3m. Add an isLoading state to <ChatInput> that represents if it's loading
+    //(waiting for a response from the chatbot).
+    //-If it is loading, don't allow sending a new message.
+    //-Also, don't allow sending a new message if inputText is empty.
 
 
 
         function  ChatInput( { chatMessages, setChatMessages } ) {
            const [inputText, setInputText] = React.useState('');
+           const [isLoading, setIsLoading] = React.useState(false);
 
             function saveInputText(event) {
                 setInputText(event.target.value);
             }
 
             async function sendMessage() {
+              //Immediate return the response if isLoading and input is empty
+              if  (isLoading || inputText === '')  return;
+              setIsLoading(true);
+              setInputText('Loading...');
                 const newChatMessages = [
                     ...chatMessages,
                     {
@@ -43,8 +46,8 @@
                 ];
 
                 setChatMessages(newChatMessages);
+
                 
-                setInputText('Loading...');
                 
                 const response = await Chatbot.getResponseAsync(inputText);
                 setChatMessages([
@@ -55,7 +58,7 @@
                         id: crypto.randomUUID()
                     }
                 ]);
-
+                setIsLoading(false);
                 response && setInputText('');
             }
 
