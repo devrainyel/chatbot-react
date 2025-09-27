@@ -76,6 +76,34 @@
             overflow-y: scroll;
             scrollbar-width: none;
         }
+
+        .loader {
+            width: 20px;
+            aspect-ratio: 1;
+            display: grid;
+            border-radius: 50%;
+            background:
+                linear-gradient(0deg ,rgb(0 0 0/50%) 30%,#0000 0 70%,rgb(0 0 0/100%) 0) 50%/8% 100%,
+                linear-gradient(90deg,rgb(0 0 0/25%) 30%,#0000 0 70%,rgb(0 0 0/75% ) 0) 50%/100% 8%;
+            background-repeat: no-repeat;
+            animation: l23 1s infinite steps(12);
+        }
+        .loader::before,
+        .loader::after {
+            content: "";
+            grid-area: 1/1;
+            border-radius: 50%;
+            background: inherit;
+            opacity: 0.915;
+            transform: rotate(30deg);
+        }
+            .loader::after {
+            opacity: 0.83;
+            transform: rotate(60deg);
+        }
+        @keyframes l23 {
+            100% {transform: rotate(1turn)}
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
@@ -105,35 +133,42 @@
             }
 
             async function sendMessage() {
-              //Immediate return the response if isLoading and input is empty
-              if  (isLoading || inputText === '')  return;
-              setIsLoading(true);
-              setInputText('Loading...');
-                const newChatMessages = [
-                    ...chatMessages,
-                    {
-                        message: inputText,
-                        sender: 'user',
-                        id: crypto.randomUUID()
-                    }
-                ];
+                if (isLoading || inputText === '') return;
 
+                const userMessage = {
+                    message: inputText,
+                    sender: 'user',
+                    id: crypto.randomUUID()
+                };
+
+                const loadingMessage = {
+                    message: <div className="loader"></div>,
+                    sender: 'bot',
+                    id: 'loading'
+                };
+
+                setIsLoading(true);
+                setInputText('');
+
+                // Add user message + loading spinner
+                const newChatMessages = [...chatMessages, userMessage, loadingMessage];
                 setChatMessages(newChatMessages);
 
-                
-                
                 const response = await Chatbot.getResponseAsync(inputText);
-                setChatMessages([
-                    ...newChatMessages, //copy of newChatMessages
-                    {
+
+                // Replace loading message with bot response
+                const updatedMessages = newChatMessages
+                    .filter((msg) => msg.id !== 'loading') // remove loading
+                    .concat({
                         message: response,
                         sender: 'bot',
                         id: crypto.randomUUID()
-                    }
-                ]);
+                    });
+
+                setChatMessages(updatedMessages);
                 setIsLoading(false);
-                response && setInputText('');
             }
+
 
             function OnKeyDown() {
                 if(event.key === 'Enter'){
@@ -171,13 +206,13 @@
                 }>
                     {
                     sender === 'bot' &&  (
-                        <i className="fa-solid fa-robot fa-2x"></i>
+                        <i className="fa-solid fa-robot fa-3x"></i>
                     )}
                     <div className="chat-message-text">
                         {message}
                     </div>
                     {sender === 'user' && (
-                        <i className="fa-solid fa-circle-user fa-2x"></i>
+                        <i className="fa-solid fa-circle-user fa-3x"></i>
                     )}
                 </div>
             );
@@ -213,23 +248,7 @@
 
         function App() {
             //more destructured
-            const [chatMessages, setChatMessages] =  React.useState([{
-                message: "hey",
-                sender: "user",
-                id: 'id1'
-            }, {
-                message: "Hey there! How can I help you?",
-                sender: "bot",
-                id: 'id2'
-            }, {
-                message: "can you get me todays date?",
-                sender: "user",
-                id: 'id3'
-            }, {
-                message: "Today is September 27",
-                sender: "bot",
-                id: 'id4'
-            }]);
+            const [chatMessages, setChatMessages] =  React.useState([]);
            // const chatMessages = array[0]; current state
             //const setChatMessages = array[1]; function to update state
            // const [chatMessages, setChatMessages] = array; shorthand
