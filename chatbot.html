@@ -104,6 +104,11 @@
         @keyframes l23 {
             100% {transform: rotate(1turn)}
         }
+
+        .welcome-text {
+        color: rgb(120, 120, 120);
+        text-align: center;
+      }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
@@ -117,16 +122,37 @@
 
     <script src="https://unpkg.com/supersimpledev/dayjs.js"></script>
     <script type="text/babel">
-    //3m. Add an isLoading state to <ChatInput> that represents if it's loading
-    //(waiting for a response from the chatbot).
-    //-If it is loading, don't allow sending a new message.
-    //-Also, don't allow sending a new message if inputText is empty.
+    //4i. In addition to built-in hooks like useState and useEffect, we can also
+    //create our own, custom hooks. We'll make the auto-scroll feature a custom hook, 
+    // so we can easily add this feature to other components.
+    //-Create a function useAutoScroll (hook functions must start with use)
+    //Inside a custom hook, we just use a combination of other hooks. For
+    //example, cut and paste the useRef() and useEffect() hooks from the ChatMessages 
+    //component into useAutoScroll.
+    //At the top, add a parameter, dependencies, and use this value as the dependency array of
+    //useEffect (since the dependency array will be provided from outside the hook).
+    //At the end, return the ref (since the ref will be used outside the hook).
+    //In the ChatMessages component, at the top, use useAutoScroll(). Provide
+    //it with the dependency array, and use the ref that it returns.
+            function useAutoScroll(dependencies) {
+                const containerRef  = React.useRef(null);
 
-
+                React.useEffect(() => {
+                const containerElem = containerRef.current;
+                if (containerElem) {
+                containerElem.scrollTop = containerElem.scrollHeight;
+                }
+                }, dependencies);
+            
+                
+                return containerRef;
+            }
 
         function  ChatInput( { chatMessages, setChatMessages } ) {
            const [inputText, setInputText] = React.useState('');
            const [isLoading, setIsLoading] = React.useState(false);
+
+           
 
             function saveInputText(event) {
                 setInputText(event.target.value);
@@ -220,13 +246,8 @@
 
         function ChatMessages( {chatMessages} ) {
 
-            const chatMessagesRef  = React.useRef(null);
-            React.useEffect(() => {
-               const containerElem = chatMessagesRef.current;
-              if (containerElem) {
-               containerElem.scrollTop = containerElem.scrollHeight;
-              }
-            }, [chatMessages]);
+            const chatMessagesRef  = useAutoScroll([chatMessages]);
+
             
             return (
                 <div 
@@ -255,6 +276,11 @@
 
             return (
                 <div className="app-container">
+                    {chatMessages.length === 0 && 
+                        <p className="welcome-text"> 
+                            Welcome to the chatbot project! Send a message using the textbox below.
+                        </p>
+                    }
                     <ChatMessages 
                         chatMessages={chatMessages}
                     />
