@@ -1,6 +1,7 @@
 import './ChatMessage.css';
+import dayjs from 'dayjs';
 
-export function ChatMessage({ message, sender }) {
+export function ChatMessage({ message, sender, time }) {
     // const { message, sender } = props;
     return (
         <div className={
@@ -14,6 +15,11 @@ export function ChatMessage({ message, sender }) {
             )}
             <div className="chat-message-text">
                 {message}
+                {
+                    <div className="message-time">
+                        {dayjs(time).format('h:mma')}
+                    </div>
+                }
             </div>
             {sender === 'user' && (
                 <i className="fa-solid fa-circle-user fa-3x"></i>

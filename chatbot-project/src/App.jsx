@@ -1,6 +1,7 @@
-import { useState } from 'react'
-import { ChatInput } from './components/ChatInput'
-import ChatMessages from './components/ChatMessages'
+import { useState, useEffect } from 'react'
+import { ChatInput } from './components/ChatInput';
+import { Chatbot } from 'supersimpledev';
+import ChatMessages from './components/ChatMessages';
 import './App.css'
 
  function App() {
@@ -9,6 +10,13 @@ import './App.css'
            // const chatMessages = array[0]; current state
             //const setChatMessages = array[1]; function to update state
            // const [chatMessages, setChatMessages] = array; shorthand
+
+            useEffect(() => {
+                Chatbot.addResponses({
+                    'tangina': 'tangina mo rin',
+                    'gago': 'gago ka rin'
+                });
+            }, []);
 
             return (
                 <div className="app-container">
