@@ -6,7 +6,7 @@ import './App.css'
 
  function App() {
             //more destructured
-            const [chatMessages, setChatMessages] =  useState([]);
+            const [chatMessages, setChatMessages] =  useState(JSON.parse(localStorage.getItem('messages')) || []);
            // const chatMessages = array[0]; current state
             //const setChatMessages = array[1]; function to update state
            // const [chatMessages, setChatMessages] = array; shorthand
@@ -17,6 +17,10 @@ import './App.css'
                     'gago': 'gago ka rin'
                 });
             }, []);
+
+            useEffect(() => {
+                localStorage.setItem('messages', JSON.stringify(chatMessages));
+            }, [chatMessages]);
 
             return (
                 <div className="app-container">
