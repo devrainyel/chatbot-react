@@ -1,6 +1,5 @@
 import { ChatMessage } from './ChatMessage'
 import { useAutoScroll } from '../hooks/AutoScroll';
-import dayjs from 'dayjs';
 import './ChatMessages.css';
 
 function ChatMessages( {chatMessages} ) {

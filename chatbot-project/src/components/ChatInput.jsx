@@ -51,13 +51,16 @@ export function  ChatInput( { chatMessages, setChatMessages } ) {
         setIsLoading(false);
     }
 
-
     function OnKeyDown() {
         if(event.key === 'Enter'){
             sendMessage();
         } else if (event.key === 'Escape'){
             setInputText('');
         }
+    }
+
+    function clearMesssages() {
+        setChatMessages([]);
     }
         
     return (
@@ -74,6 +77,10 @@ export function  ChatInput( { chatMessages, setChatMessages } ) {
                 onClick={sendMessage}
                 className="send-button"
             >Send</button>
+            <button
+                onClick={clearMesssages}
+                className="clear-button"
+            >Clear</button>
         </div>
     );
 }

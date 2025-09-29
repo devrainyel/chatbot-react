@@ -4,6 +4,9 @@ import { Chatbot } from 'supersimpledev';
 import ChatMessages from './components/ChatMessages';
 import './App.css'
 
+//5k. Create a "Clear" button. Clicking it removes all chat messages on the
+//website and updates 'messages' in localStorage to [].
+
  function App() {
             //more destructured
             const [chatMessages, setChatMessages] =  useState(JSON.parse(localStorage.getItem('messages')) || []);
